@@ -7,15 +7,15 @@
 
 
 (defn clojure-web
-  "FIXME: write documentation"
+  "generate new clojure web project from template files"
   [name]
   (let [data {:name name
               :sanitized (name-to-path name)}]
     (main/info "Generating fresh 'lein new' clojure-web project.")
     (->files data
              ["Procfile"                               (render "Procfile" data)]
-             ["README.org"                             (render "README.org" data)]
-             ["design.org"                             (render "design.org" data)]
+             ["README.md"                              (render "README.md" data)]
+             ["design.md"                              (render "design.md" data)]
              [".gitignore"                             (render "gitignore" data)]
              ["profiles_example.clj"                   (render "profiles_example.clj" data)]
              ["project.clj"                            (render "project.clj" data)]
