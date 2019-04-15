@@ -53,25 +53,25 @@ lein garden auto
 ## Database Migrations
 
 - the clojure migratus library is used to handle db schema changes.
-- migrations are located in the ~resources/migrations~ folder.
-- to create a new migration ~lein migratus create <descriptive-name>~ and then edit the ~up~ and ~down~ files created.
-- to apply migrations to your local dev instance ~lein migratus migrate~
-- production migrations are applied automatically; see ~circle.yml~
+- migrations are located in the `resources/migrations` folder.
+- to create a new migration `lein migratus create <descriptive-name>` and then edit the `up` and `down` files created.
+- migrations are applied automatically see config.clj and core.clj
+- to manually apply migrations to your local dev instance `lein migratus migrate`
 
 
 ## Production Setup
 
 you'll need to load the following environment variables in your production environment:
 
-- ~DATABASE_URL~
-- ~PORT~
-- ~SESSION_COOKIE_KEY~
+- `DATABASE_URL`
+- `PORT`
+- `SESSION_COOKIE_KEY`
 
 optionally you can customize the following variables in your production environment:
 
-- ~REPORTED_LOG_LEVEL~ (defaults to "warn"; set's min level to write to production log)
-- ~LOG_APPENDER~ (options "println" "sentry")
-- ~SENTRY_DSN~ (required only if you've set log-appender to "sentry")
+- `REPORTED_LOG_LEVEL` (defaults to "warn"; set's min level to write to production log)
+- `LOG_APPENDER` (options "println" "sentry")
+- `SENTRY_DSN` (required only if you've set log-appender to "sentry")
 
 
 ## License
