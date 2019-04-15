@@ -24,18 +24,19 @@
                  [ring/ring-defaults "0.3.2"]
                  ;;; hosted assests
                  [ring-webjars "0.2.0"]
-                 [org.webjars/font-awesome "5.6.3"]]
+                 [org.webjars/font-awesome "5.7.1"]]
 
 
   :plugins [[lein-environ "1.1.0"]
-            [lein-ring "0.12.4"]
-            [migratus-lein "0.7.0"]
+            [lein-ring "0.12.5"]
+            [migratus-lein "0.7.1"]
             [lein-garden "0.3.0"]
             [lein-pdo "0.1.1"]]
 
 
   :ring {:handler {{name}}.core/app
-         :port 8000}
+         :port 8000
+         :auto-refresh? true}
 
 
   :garden {:builds [{:source-paths ["src"]
@@ -53,13 +54,16 @@
              :db ~(get (System/getenv) "DATABASE_URL")}
 
 
-  :profiles {:uberjar {:aot :all}
-             :dev {
-                   :main {{name}}.core/-dev-main
-                   :dependencies [[javax.servlet/servlet-api "2.5"] ; do i need?
-                                  [ring/ring-mock "0.3.2"]]}
-             :test {:dependencies[[javax.servlet/servlet-api "2.5"]
-                                  [ring/ring-mock "0.3.2"]]}}
+  :profiles {:uberjar {:aot :all
+                       :env {:secure-defaults "true"}}
+             :dev  [:project/dev  :profiles/dev]
+             :test [:project/test :profiles/test]
+             ;; only edit :profiles/* in profiles.clj
+             :profiles/dev  {}
+             :profiles/test {}
+             :project/dev {:main {{name}}.core/-dev-main
+                           :dependencies [[ring/ring-mock "0.3.2"]]}
+             :project/test {:dependencies[[ring/ring-mock "0.3.2"]]}}
 
 
   :main {{name}}.core
@@ -68,7 +72,7 @@
   :uberjar-name "{{name}}.jar"
 
 
-  :prep-tasks ["clean" ["garden" "once"] "compile"]
+  :prep-tasks ["clean" ["garden" "once"]]
 
 
   :aliases {"dev" ["pdo" ["garden" "auto"] ["ring" "server"]]}

@@ -1,6 +1,8 @@
 (ns {{name}}.core
-  (:require [{{name}}.route :as route])
-  (:require [ring.adapter.jetty             :as    jetty]
+  (:require [{{name}}.config :as config]
+            [{{name}}.route  :as route])
+  (:require [environ.core                   :as    environ]
+            [ring.adapter.jetty             :as    jetty]
             [ring.middleware.defaults       :refer :all]
             [ring.middleware.webjars        :refer [wrap-webjars]]
             [ring.middleware.resource       :refer [wrap-resource]]
@@ -9,7 +11,8 @@
   (:gen-class))
 
 
-;; (config/configure-logging)
+(config/configure-logging)
+(config/run-db-migration)
 
 
 (def app
@@ -17,11 +20,13 @@
       ;; wrap-defaults includes ring middleware in the correct order to provide:
       ;; csrf protection, session data, url parameters, static assets, and more
       (wrap-defaults
-       (-> site-defaults
-           ;; (assoc-in [:session :store] (cookie-store {:key config/session-cookie-key}))
+       (-> (if (= "true" (environ/env :secure-defaults))
+             secure-site-defaults
+             site-defaults)
+           (assoc-in [:session :store] (cookie-store {:key config/session-cookie-key}))
            (assoc-in [:session :cookie-attrs] {:max-age 3600})))
-      wrap-webjars ; set path for webjar assets
-      (wrap-resource "public")))
+      ;; set path for webjar assets
+      wrap-webjars))
 
 
 (defn -main
